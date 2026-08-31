@@ -1,6 +1,8 @@
 import os
 
 # Target process names (substring match, make sure these are lowercase)
+# Since this uses substring matching, "chrome" will match both "chrome" (Linux) and "chrome.exe" (Windows).
+# So you generally don't need to add ".exe" to these names.
 STUDY_APPS = ["chrome", "code", "antigravity-ide"]
 
 # Path to the data file (absolute path relative to this script)

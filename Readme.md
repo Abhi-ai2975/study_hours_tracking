@@ -17,6 +17,7 @@ A background tracking application designed to run as a systemd service and monit
 
 ### 1. Configuration
 Open `src/config.py` and modify the `STUDY_APPS` array with the lowercase names of applications you want to track (e.g., `["chrome", "code", "antigravity-ide"]`).
+*Note for Windows users:* Because the tracker uses substring matching, `"chrome"` will successfully match both `"chrome"` on Linux and `"chrome.exe"` on Windows. You generally do not need to add `.exe` to the app names.
 
 ### 2. Run Manually
 You can test the tracker by running:
@@ -24,7 +25,7 @@ You can test the tracker by running:
 python main.py
 ```
 
-### 3. Run as Systemd Service (Recommended)
+### 3. Run in the Background (Linux - Systemd)
 This tool is designed to run silently as a user-level background service.
 
 1. Create a service file `~/.config/systemd/user/study-hours-tracking.service`:
@@ -49,11 +50,35 @@ systemctl --user daemon-reload
 systemctl --user enable study-hours-tracking.service
 systemctl --user start study-hours-tracking.service
 ```
+3. Check status: `systemctl --user status study-hours-tracking.service`
 
-### Checking Status and Logs
-- **Service Status:** `systemctl --user status study-hours-tracking.service`
-- **View Live Logs:** `journalctl --user -u study-hours-tracking.service -f`
-- **View Saved Data:** Look inside `data/study_data.json`
+### 4. Run in the Background (Windows)
+To run this script automatically in the background on Windows, you have two options:
+
+**Option A: Startup Folder (Easiest)**
+1. Create a new text file and paste the following:
+   ```bat
+   @echo off
+   cd C:\path\to\study_hours_tracking
+   start /B pythonw main.py
+   ```
+   *(Note: using `pythonw` instead of `python` runs it without a terminal window)*
+2. Save this file as `tracker.bat`.
+3. Press `Win + R`, type `shell:startup`, and press Enter.
+4. Move your `tracker.bat` file into that Startup folder. It will now run invisibly every time you log in.
+
+**Option B: Task Scheduler (More robust)**
+1. Open Windows Task Scheduler.
+2. Click "Create Basic Task..." and name it "Study Hours Tracker".
+3. Trigger: "When I log on".
+4. Action: "Start a program".
+5. Program/script: `pythonw` (this hides the console window).
+6. Add arguments: `main.py`
+7. Start in: `C:\path\to\study_hours_tracking`
+8. Finish the setup and ensure it is enabled.
+
+### Viewing Saved Data
+Regardless of OS, look inside `data/study_data.json` to see your tracked hours.
 
 ## Files
 - `main.py`: Entry point, sets up signal handlers.
