@@ -8,10 +8,12 @@ A background tracking application designed to run as a systemd service and monit
 - **Human-Readable Data**: Stores all your studying time history in a human-readable JSON file (`data/study_data.json`) in the format `Xh Ym Zs`.
 - **Lightweight Logging**: Optimizes file I/O by only saving logs when your state changes or periodically while active.
 - **Graceful Shutdown**: Hooks into system termination signals (SIGTERM/SIGINT) to ensure data is properly saved before shutting down.
+- **Floating Widget**: Includes a standalone, always-on-top GUI widget (`gui.py`) to see your current study hours anywhere.
 
 ## Requirements
 - Python 3
 - `psutil` (can be installed via `pip install psutil` or `pip install -r requirements.txt`)
+- `tkinter` (usually built-in, but on some Linux distros you may need to install `python3-tk`)
 
 ## Usage
 
@@ -19,7 +21,15 @@ A background tracking application designed to run as a systemd service and monit
 Open `src/config.py` and modify the `STUDY_APPS` array with the lowercase names of applications you want to track (e.g., `["chrome", "code", "antigravity-ide"]`).
 *Note for Windows users:* Because the tracker uses substring matching, `"chrome"` will successfully match both `"chrome"` on Linux and `"chrome.exe"` on Windows. You generally do not need to add `.exe` to the app names.
 
-### 2. Run Manually
+### 2. Floating GUI Widget
+To see your live study time on your screen, simply run:
+```bash
+python gui.py
+```
+*(On Windows, you can use `pythonw gui.py` to run it without a terminal window).* 
+You can click and drag the widget anywhere on your screen. Click the **X** to close it.
+
+### 3. Run Manually
 You can test the tracker by running:
 ```bash
 python main.py
